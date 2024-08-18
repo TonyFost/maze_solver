@@ -12,6 +12,9 @@ def main():
     cell.draw(200, 250, 250, 300)
     cell.has_right_wall = False
     cell.draw(250, 300, 300, 350)
+    other_cell = Cell(300, 350, 350, 400, win)
+    other_cell.draw(300, 350, 350, 400)
+    cell.draw_move(other_cell)
     win.wait_for_close()
 
 

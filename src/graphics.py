@@ -5,6 +5,10 @@ class Point():
         self.x = x
         self.y = y
 
+    def __repr__(self):
+        return f"Point({self.x},{self.y})"
+
+
 class Line():
     def __init__(self, pt_1:Point, pt_2:Point):
         self.point1 = pt_1
@@ -54,7 +58,14 @@ class Cell():
         self._y2 = y2
         self._win = win
 
+    def center(self):
+        return ((self._x2 + self._x1)//2, (self._y2 + self._y1)//2)
+
     def draw(self, x1, y1, x2, y2):
+        self._x1 = x1
+        self._y1 = y1
+        self._x2 = x2
+        self._y2 = y2
         if self.has_left_wall:
             self._win.draw(Line(Point(x1, y1), Point(x1, y2)), "red")
         if self.has_right_wall:
@@ -63,3 +74,13 @@ class Cell():
             self._win.draw(Line(Point(x1, y1), Point(x2, y1)), "blue")
         if self.has_bottom_wall:
             self._win.draw(Line(Point(x1, y2), Point(x2, y2)), "black")
+
+    def draw_move(self, to_cell, undo=False):
+        color = "red" if not undo else "gray"
+
+        center = Point(*self.center())
+        print(center)
+        other_center = Point(*to_cell.center())
+        print(other_center)
+
+        self._win.draw(Line(center, other_center), color)
