@@ -67,17 +67,33 @@ class Cell():
         self._y1 = y1
         self._x2 = x2
         self._y2 = y2
+        color = "black"
         if not self._win:
             return
         
         if self.has_left_wall:
-            self._win.draw(Line(Point(x1, y1), Point(x1, y2)), "red")
+            color = "black"
+        else:
+            color = "white"
+        self._win.draw(Line(Point(x1, y1), Point(x1, y2)), color)
+
         if self.has_right_wall:
-            self._win.draw(Line(Point(x2, y1), Point(x2, y2)), "yellow")
+            color = "black"
+        else:
+            color = "white"
+        self._win.draw(Line(Point(x2, y1), Point(x2, y2)), color)
+
         if self.has_top_wall:
-            self._win.draw(Line(Point(x1, y1), Point(x2, y1)), "blue")
+            color = "black"
+        else:
+            color = "white"
+        self._win.draw(Line(Point(x1, y1), Point(x2, y1)), color)
+
         if self.has_bottom_wall:
-            self._win.draw(Line(Point(x1, y2), Point(x2, y2)), "black")
+            color = "black"
+        else:
+            color = "white"
+        self._win.draw(Line(Point(x1, y2), Point(x2, y2)), color)
 
     def draw_move(self, to_cell, undo=False):
         color = "red" if not undo else "gray"
@@ -114,6 +130,8 @@ class Maze():
             for r in range(self._num_rows):
                 self._draw_cell(c, r)
 
+        self._break_entrance_and_exit()
+
     def _draw_cell(self, i, j):
         x1 = self._x1 + (i * self._cel_size_x)
         y1 = self._y1 + (j * self._cel_size_y)
@@ -126,5 +144,18 @@ class Maze():
     def _animate(self):
         if self._win:
             self._win.redraw()
-            sleep(.05)
+            sleep(.01)
+
+    def _break_entrance_and_exit(self):
+        if self._num_rows < 1 or self._num_cols < 1:
+            return
+        
+        self._cells[0][0].has_top_wall = False
+        self._draw_cell(0,0)
+        
+        last_col = self._num_cols - 1
+        last_row = self._num_rows - 1
+        self._cells[last_col][last_row].has_bottom_wall = False
+        self._draw_cell(last_col,last_row)
+
     
