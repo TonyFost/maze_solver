@@ -1,4 +1,5 @@
 from tkinter import Tk, BOTH, Canvas
+from time import sleep
 
 class Point():
     def __init__(self, x, y):
@@ -84,3 +85,43 @@ class Cell():
         print(other_center)
 
         self._win.draw(Line(center, other_center), color)
+
+class Maze():
+    def __init__(self, x1, y1, num_rows, num_cols, cel_size_x, cel_size_y, win):
+        self._x1 = x1
+        self._y1 = y1
+        self._num_rows = num_rows
+        self._num_cols = num_cols
+        self._cel_size_x = cel_size_x
+        self._cel_size_y = cel_size_y
+        self._win = win
+        self._create_cells()
+
+    def _create_cells(self):
+        self._cells = [
+                        [Cell(self._x1 + (self._cel_size_x * col),
+                            self._y1 + (self._cel_size_y * row),
+                            self._cel_size_x + (self._cel_size_x * col),
+                            self._cel_size_y + (self._cel_size_y * row),
+                            self._win)
+                            for row in range(self._num_rows)]
+                        for col in range(self._num_cols)
+        ]
+
+        for c in range(self._num_cols):
+            for r in range(self._num_rows):
+                self._draw_cell(c, r)
+
+    def _draw_cell(self, i, j):
+        x1 = self._x1 + (i * self._cel_size_x)
+        y1 = self._y1 + (j * self._cel_size_y)
+        x2 = x1 + self._cel_size_x
+        y2 = y1 + self._cel_size_y
+
+        self._cells[i][j].draw(x1, y1, x2, y2)
+        self._animate()
+
+    def _animate(self):
+        self._win.redraw()
+        sleep(.05)
+    
