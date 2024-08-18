@@ -48,7 +48,7 @@ class Window():
         print("Closing window...")
         
 class Cell():
-    def __init__(self, x1, y1, x2, y2, win:Window):
+    def __init__(self, x1, y1, x2, y2, win=None):
         self.has_left_wall = True
         self.has_right_wall = True
         self.has_top_wall = True
@@ -67,6 +67,9 @@ class Cell():
         self._y1 = y1
         self._x2 = x2
         self._y2 = y2
+        if not self._win:
+            return
+        
         if self.has_left_wall:
             self._win.draw(Line(Point(x1, y1), Point(x1, y2)), "red")
         if self.has_right_wall:
@@ -80,14 +83,13 @@ class Cell():
         color = "red" if not undo else "gray"
 
         center = Point(*self.center())
-        print(center)
         other_center = Point(*to_cell.center())
-        print(other_center)
 
-        self._win.draw(Line(center, other_center), color)
+        if self._win:
+            self._win.draw(Line(center, other_center), color)
 
 class Maze():
-    def __init__(self, x1, y1, num_rows, num_cols, cel_size_x, cel_size_y, win):
+    def __init__(self, x1, y1, num_rows, num_cols, cel_size_x, cel_size_y, win=None):
         self._x1 = x1
         self._y1 = y1
         self._num_rows = num_rows
@@ -122,6 +124,7 @@ class Maze():
         self._animate()
 
     def _animate(self):
-        self._win.redraw()
-        sleep(.05)
+        if self._win:
+            self._win.redraw()
+            sleep(.05)
     
