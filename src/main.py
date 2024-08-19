@@ -21,6 +21,10 @@ def main():
     num_cols = 30
     num_rows = 20
     maze = Maze(50, 50, num_rows, num_cols, cell_size_x, cell_size_y, win)
+    if maze.solve():
+        print("Maze Solved!")
+    else:
+        print("Maze is Winner!")
     win.wait_for_close()
 
 

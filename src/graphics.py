@@ -137,14 +137,14 @@ class Maze():
 
         for c in range(self._num_cols):
             for r in range(self._num_rows):
-                self._draw_cell(c, r, .01)
+                self._draw_cell(c, r, .001)
 
         self._break_entrance_and_exit()
         if self._num_rows > 0 and self._num_cols > 0:
             self._break_walls_r(0,0)
             self._reset_cells_visited()
 
-    def _draw_cell(self, i, j, wait=.05):
+    def _draw_cell(self, i, j, wait=.01):
         x1 = self._x1 + (i * self._cel_size_x)
         y1 = self._y1 + (j * self._cel_size_y)
         x2 = x1 + self._cel_size_x
@@ -156,7 +156,7 @@ class Maze():
         self._cells[i][j].draw(x1, y1, x2, y2)
         self._animate(wait)
 
-    def _animate(self, wait):
+    def _animate(self, wait=.05):
         if self._win:
             self._win.redraw()
             sleep(wait)
@@ -221,4 +221,53 @@ class Maze():
             for r in range(self._num_rows):
                 self._cells[c][r]._visited = False
 
+
+    def solve(self):
+        return self._solve_r(0,0)
+
+    def _solve_r(self, i, j):
+        this_cell = self._cells[i][j]
+        self._animate()
+        this_cell._visited = True
+        if i == self._num_cols -1 and j == self._num_rows -1:
+            return True
         
+        to_visit = []
+        check_left = i-1
+        check_right = i+1
+        check_up = j-1
+        check_down = j+1
+
+        if check_left >= 0:
+            check_cell = self._cells[check_left][j]
+            if not this_cell.has_left_wall and not check_cell._visited:
+                to_visit.append( ((check_left, j), Maze._left) )
+        if check_right < self._num_cols:
+            check_cell = self._cells[check_right][j]
+            if not this_cell.has_right_wall and not check_cell._visited:
+                to_visit.append( ((check_right, j), Maze._right) )
+        if check_up >= 0:
+            check_cell = self._cells[i][check_up]
+            if not this_cell.has_top_wall and not check_cell._visited:
+                to_visit.append( ((i, check_up), Maze._top) )
+        if check_down < self._num_rows:
+            check_cell = self._cells[i][check_down]
+            if not this_cell.has_bottom_wall and not check_cell._visited:
+                to_visit.append( ((i, check_down), Maze._bottom) )
+
+        print(to_visit)
+
+        for cell in to_visit:
+            cell_i = cell[0][0]
+            cell_j = cell[0][1]
+            # if self._cells[cell_i][cell_j]._visited:
+            #     continue
+            self._cells[i][j].draw_move(self._cells[cell_i][cell_j])
+            if self._solve_r(cell_i, cell_j):
+                return True
+            
+            self._cells[i][j].draw_move(self._cells[cell_i][cell_j], True)
+
+        return False
+
+        # self._draw_cell(i,j)
