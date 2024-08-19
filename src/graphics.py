@@ -142,6 +142,7 @@ class Maze():
         self._break_entrance_and_exit()
         if self._num_rows > 0 and self._num_cols > 0:
             self._break_walls_r(0,0)
+            self._reset_cells_visited()
 
     def _draw_cell(self, i, j, wait=.05):
         x1 = self._x1 + (i * self._cel_size_x)
@@ -206,6 +207,8 @@ class Maze():
         for cell in to_visit:
             cell_i = cell[0][0]
             cell_j = cell[0][1]
+            if self._cells[cell_i][cell_j]._visited:
+                continue
             self._break_wall(self._cells[i][j], cell[1])
             self._break_wall(self._cells[cell_i][cell_j], cell[1]*-1)
             self._draw_cell(i,j)
@@ -213,5 +216,9 @@ class Maze():
 
         # self._draw_cell(i,j)
         
+    def _reset_cells_visited(self):
+        for c in range(self._num_cols):
+            for r in range(self._num_rows):
+                self._cells[c][r]._visited = False
 
         
